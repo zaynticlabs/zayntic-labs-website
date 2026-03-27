@@ -156,7 +156,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Sending...";
                 submitBtn.disabled = true;
 
-                setTimeout(() => {
+                fetch("https://formsubmit.co/ajax/zaynticlabs@gmail.com", {
+                    method: "POST",
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        business: document.getElementById('business').value,
+                        message: document.getElementById('message').value,
+                        _subject: "New Website Lead!"
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                     contactForm.reset();
@@ -165,7 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         formSuccess.style.display = 'none';
                     }, 5000);
-                }, 1500);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    submitBtn.innerHTML = "Error! Try Again.";
+                    submitBtn.disabled = false;
+                });
             }
         });
     }

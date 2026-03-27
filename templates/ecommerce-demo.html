@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumière | Modern E-Commerce Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #ffffff;
+            --accent: #d4af37; /* Gold */
+            --gray: #f5f5f5;
+            --text-light: #666;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); color: var(--primary); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* Navbar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; border-bottom: 1px solid #eee; position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 100;}
+        .logo { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 600; letter-spacing: 2px;}
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-transform: uppercase; font-size: 0.85rem; font-weight: 500; letter-spacing: 1px;}
+        .nav-icons { display: flex; gap: 1rem; font-size: 1.2rem;}
+
+        /* Hero */
+        .hero { height: 80vh; background: url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80') center/cover; display: flex; align-items: center; justify-content: center; text-align: center; position: relative;}
+        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); }
+        .hero-content { position: relative; color: white; max-width: 600px; padding: 0 20px;}
+        .hero h1 { font-family: var(--font-heading); font-size: 4rem; font-weight: 400; margin-bottom: 1rem;}
+        .btn { display: inline-block; padding: 1rem 2.5rem; background: white; color: black; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: 500; transition: all 0.3s; border: 1px solid white;}
+        .btn:hover { background: transparent; color: white; }
+
+        /* Featured Collection */
+        .section { padding: 5rem 5%; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 400;}
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .product-card { text-align: center; cursor: pointer; }
+        .product-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; margin-bottom: 1rem; transition: transform 0.5s;}
+        .img-container { overflow: hidden; margin-bottom: 1rem;}
+        .product-card:hover .product-img { transform: scale(1.05); }
+        .product-title { font-weight: 500; margin-bottom: 0.25rem;}
+        .product-price { color: var(--text-light); }
+
+        /* Footer */
+        footer { background: var(--primary); color: white; padding: 4rem 5% 2rem; text-align: center;}
+        .footer-logo { font-family: var(--font-heading); font-size: 2rem; margin-bottom: 1rem;}
+        .footer-links { margin-bottom: 2rem; display: flex; justify-content: center; gap: 2rem; font-size: 0.85rem; text-transform: uppercase;}
+        
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="#">Shop</a>
+            <a href="#">Collections</a>
+            <a href="#">Journal</a>
+        </div>
+        <div class="logo">LUMIÈRE</div>
+        <div class="nav-icons">
+            <i class='bx bx-search'></i>
+            <i class='bx bx-user'></i>
+            <i class='bx bx-shopping-bag'></i>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>The Summer Edit</h1>
+            <p style="margin-bottom: 2rem; font-size: 1.1rem; font-weight: 300;">Discover effortless elegance for the new season.</p>
+            <a href="#" class="btn">Shop Collection</a>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-header">
+            <h2>New Arrivals</h2>
+            <p style="color: var(--text-light)">Curated pieces for the modern wardrobe.</p>
+        </div>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1596783049187-578b87e220b3?auto=format&fit=crop&q=80&w=600" alt="Product" class="product-img">
+                </div>
+                <h3 class="product-title">Silk Slip Dress</h3>
+                <p class="product-price">£125</p>
+            </div>
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1596783074918-c84cb13998fb?auto=format&fit=crop&q=80&w=600" alt="Product" class="product-img">
+                </div>
+                <h3 class="product-title">Linen Blazer</h3>
+                <p class="product-price">£195</p>
+            </div>
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&q=80&w=600" alt="Product" class="product-img">
+                </div>
+                <h3 class="product-title">Leather Tote</h3>
+                <p class="product-price">£250</p>
+            </div>
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="https://images.unsplash.com/photo-1550614000-4b95d4ed7991?auto=format&fit=crop&q=80&w=600" alt="Product" class="product-img">
+                </div>
+                <h3 class="product-title">Minimalist Watch</h3>
+                <p class="product-price">£140</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">LUMIÈRE</div>
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Shipping</a>
+            <a href="#">Returns</a>
+            <a href="#">Contact</a>
+        </div>
+        <p style="color: #888; font-size: 0.8rem;">&copy; 2026 Lumière Boutique. A Template by Zayntic Labs.</p>
+    </footer>
+</body>
+</html>

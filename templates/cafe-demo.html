@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rustic Bean | Cafe Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDFBF7;
+            --text: #2C2C2C;
+            --accent: #E26D5C;
+            --font-head: 'Cormorant Garamond', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; }
+        
+        nav { display: flex; justify-content: space-between; padding: 2rem 5%; position: absolute; width: 100%; z-index: 10; color: white;}
+        .logo { font-family: var(--font-head); font-size: 2rem; font-weight: 600;}
+        .nav-links { display: flex; gap: 2rem; align-items: center;}
+        .nav-links a { color: white; text-decoration: none; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px;}
+        .btn-reserve { border: 1px solid white; padding: 0.8rem 1.5rem; transition: background 0.3s;}
+        .btn-reserve:hover { background: white; color: var(--text);}
+
+        .hero { height: 100vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;}
+        .hero h1 { font-family: var(--font-head); font-size: 5rem; font-weight: 400; margin-bottom: 1rem;}
+        .hero p { font-size: 1.1rem; letter-spacing: 3px; font-weight: 300; text-transform: uppercase;}
+
+        .section { padding: 8rem 5%; display: flex; gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto;}
+        .text-content { flex: 1; }
+        .text-content h2 { font-family: var(--font-head); font-size: 3.5rem; margin-bottom: 1.5rem; font-weight: 400;}
+        .text-content p { line-height: 1.8; color: #555; margin-bottom: 2rem;}
+        .image-content { flex: 1; position: relative;}
+        .image-content img { width: 100%; height: 500px; object-fit: cover; border-radius: 8px;}
+        .image-content::after { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid var(--accent); top: 20px; left: 20px; z-index: -1; border-radius: 8px;}
+
+        .menu-preview { background: #2C2C2C; color: white; padding: 6rem 5%; text-align: center;}
+        .menu-preview h2 { font-family: var(--font-head); font-size: 3.5rem; margin-bottom: 3rem; font-weight: 400;}
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; max-width: 1000px; margin: 0 auto;}
+        .menu-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #555; padding-bottom: 0.5rem; margin-bottom: 1.5rem;}
+        .item-name { font-family: var(--font-head); font-size: 1.4rem; font-weight: 600; color: var(--accent);}
+        .item-price { font-size: 1.1rem; }
+
+        @media (max-width: 768px) {
+            .section { flex-direction: column; padding: 4rem 5%;}
+            .hero h1 { font-size: 3.5rem; }
+            nav { flex-direction: column; gap: 1rem; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">The Rustic Bean</div>
+        <div class="nav-links">
+            <a href="#">Our Story</a>
+            <a href="#">Menu</a>
+            <a href="#" class="btn-reserve">Reserve Table</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>The Rustic Bean</h1>
+        <p>Artisan Coffee & Kitchen</p>
+    </header>
+
+    <section class="section">
+        <div class="text-content">
+            <h2>Crafted with love.</h2>
+            <p>Every cup we pour and every plate we serve is a testament to our passion for honest, delicious food. Sourced locally, prepared freshly, and enjoyed slowly.</p>
+            <p>Join us for breakfast, brunch, or an afternoon pick-me-up in a space designed to feel like home.</p>
+            <a href="#" style="color: var(--accent); text-transform: uppercase; font-weight: 600; letter-spacing: 1px;">Discover Our Story -></a>
+        </div>
+        <div class="image-content">
+            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80" alt="Pouring coffee">
+        </div>
+    </section>
+
+    <section class="menu-preview">
+        <h2>Morning Classics</h2>
+        <div class="menu-grid">
+            <div class="menu-column">
+                <div class="menu-item"><span class="item-name">Avocado Toast</span><span class="item-price">$12</span></div>
+                <div class="menu-item"><span class="item-name">Shakshuka</span><span class="item-price">$15</span></div>
+                <div class="menu-item"><span class="item-name">House Granola</span><span class="item-price">$10</span></div>
+            </div>
+            <div class="menu-column">
+                <div class="menu-item"><span class="item-name">Flat White</span><span class="item-price">$4.5</span></div>
+                <div class="menu-item"><span class="item-name">Matcha Latte</span><span class="item-price">$5.5</span></div>
+                <div class="menu-item"><span class="item-name">Cold Brew</span><span class="item-price">$5</span></div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

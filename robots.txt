@@ -1,0 +1,6 @@
+# robots.txt for Zayntic Labs
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.zaynticlabs.co.uk/sitemap.xml

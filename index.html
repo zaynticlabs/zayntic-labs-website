@@ -61,6 +61,60 @@
     <!-- Boxicons for standard icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase Visitor Counter -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+      import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJ3BSPUwxjuSCNxSVM4yyxH1Zn7YNqY2w",
+        authDomain: "zayntic-visitor-counter.firebaseapp.com",
+        databaseURL: "https://zayntic-visitor-counter-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "zayntic-visitor-counter",
+        storageBucket: "zayntic-visitor-counter.firebasestorage.app",
+        messagingSenderId: "842390090860",
+        appId: "1:842390090860:web:b4fb880dffa85cfeecd449",
+        measurementId: "G-TYTXGB0X5D"
+      };
+
+      const SITE_KEY = "Zayntic-Labs";
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const counterRef = ref(db, 'visitors/' + SITE_KEY);
+
+      // Increment count on each visit (once per session)
+      const sessionKey = 'visited_' + SITE_KEY;
+      if (!sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, 'true');
+        runTransaction(counterRef, (current) => {
+          return (current || 0) + 1;
+        });
+      }
+
+      // Listen for real-time count updates and display it
+      onValue(counterRef, (snapshot) => {
+        const count = snapshot.val() || 0;
+        const el = document.getElementById('visitor-count-number');
+        if (el) {
+          animateCount(el, parseInt(el.textContent) || 0, count);
+        }
+      });
+
+      function animateCount(el, from, to) {
+        const duration = 1500;
+        const start = performance.now();
+        function step(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(from + (to - from) * ease)
+                               .toLocaleString();
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -435,8 +489,21 @@
             <div class="footer-bottom">
                 <div class="container footer-bottom-container">
                     <p>&copy; <span id="current-year"></span> Zayntic Labs. All rights reserved.</p>
-                    <div class="visitor-counter">
-                        <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2Fzaynticlabs%2Fzayntic-labs-website.json&label=Ripples&style=flat-square" alt="Zayntic Labs website visitor counter">
+                    <!--
+                      VISITOR COUNTER — Firebase Realtime Database
+                      =============================================
+                      To use this counter on a different website:
+                      1. Copy this widget HTML to the other site
+                      2. Change SITE_KEY in the <script> to a unique name:
+                         "brighton-travellers"
+                      4. Each site's count stored at:
+                         visitors/[SITE_KEY] in Firebase
+                    -->
+                    <div id="visitor-counter-widget" aria-label="Visitor counter">
+                      <div id="visitor-counter-inner">
+                        <span id="visitor-count-number">...</span>
+                        <span id="visitor-counter-label">Protons</span>
+                      </div>
                     </div>
                 </div>
             </div>

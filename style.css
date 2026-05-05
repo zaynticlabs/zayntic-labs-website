@@ -828,6 +828,18 @@ a.portfolio-image {
     gap: 0.5rem;
 }
 
+.form-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
 /* --- FOOTER --- */
 .footer {
     background: var(--bg-secondary);

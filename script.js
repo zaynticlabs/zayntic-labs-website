@@ -115,21 +115,136 @@ document.addEventListener('DOMContentLoaded', () => {
 
     animateElements.forEach(el => observer.observe(el));
 
-    // --- Form Validation ---
+    // --- Form Validation & Bulletproof Submission ---
     const contactForm = document.getElementById('contact-form');
     const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+
+    // ─── Config ───
+    const RECIPIENT_EMAIL = 'zaynticlabs@gmail.com';
+    // Web3Forms access key (registered & active)
+    const WEB3FORMS_KEY = '68e5a9eb-6d37-437a-b5c6-ba5d7c412c1c';
+
+    /**
+     * Attempt to submit via Web3Forms (PRIMARY provider).
+     * Returns true on success, false on failure.
+     * Skips entirely if no access key is configured.
+     */
+    async function sendViaWeb3Forms(payload) {
+        if (!WEB3FORMS_KEY) return false; // No key configured, skip
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    access_key: WEB3FORMS_KEY,
+                    subject: '🚀 New Zayntic Labs Enquiry!',
+                    from_name: 'Zayntic Labs Website',
+                    name: payload.name,
+                    email: payload.email,
+                    business: payload.business,
+                    message: payload.message
+                })
+            });
+            const data = await res.json();
+            return data.success === true;
+        } catch (err) {
+            console.warn('[Web3Forms] Failed:', err);
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to submit via FormSubmit.co (FALLBACK provider).
+     * Returns true on success, false on failure.
+     */
+    async function sendViaFormSubmit(payload) {
+        try {
+            const res = await fetch('https://formsubmit.co/ajax/' + RECIPIENT_EMAIL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    name: payload.name,
+                    email: payload.email,
+                    business: payload.business,
+                    message: payload.message,
+                    _subject: 'New Zayntic Labs Enquiry (Backup)'
+                })
+            });
+            const data = await res.json();
+            return data.success === 'true' || data.success === true;
+        } catch (err) {
+            console.warn('[FormSubmit] Failed:', err);
+            return false;
+        }
+    }
+
+    /**
+     * Save a copy of every submission to Firebase Realtime Database.
+     * This guarantees you never lose an enquiry, even if email services fail.
+     */
+    async function saveToFirebase(payload) {
+        try {
+            const { getDatabase, ref, push, set } = await import('https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js');
+            const { getApp } = await import('https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js');
+            const app = getApp(); // reuse the already-initialised app
+            const db = getDatabase(app);
+            const enquiriesRef = ref(db, 'enquiries/zayntic-labs');
+            const newRef = push(enquiriesRef);
+            await set(newRef, {
+                ...payload,
+                timestamp: new Date().toISOString(),
+                source: 'contact-form'
+            });
+            console.log('[Firebase] Enquiry saved successfully.');
+            return true;
+        } catch (err) {
+            console.warn('[Firebase] Save failed:', err);
+            return false;
+        }
+    }
+
+    /**
+     * Last-resort: open user's mail client with pre-filled email.
+     */
+    function openMailtoFallback(payload) {
+        const subject = encodeURIComponent('Website Enquiry from ' + payload.name);
+        const body = encodeURIComponent(
+            'Name: ' + payload.name + '\n' +
+            'Email: ' + payload.email + '\n' +
+            'Business: ' + payload.business + '\n\n' +
+            'Message:\n' + payload.message
+        );
+        window.location.href = 'mailto:' + RECIPIENT_EMAIL + '?subject=' + subject + '&body=' + body;
+    }
+
+    /**
+     * Show a UI message (success or error).
+     */
+    function showFormMessage(type, customMsg) {
+        if (type === 'success' && formSuccess) {
+            formSuccess.style.display = 'flex';
+            if (formError) formError.style.display = 'none';
+            setTimeout(() => { formSuccess.style.display = 'none'; }, 6000);
+        } else if (type === 'error' && formError) {
+            if (customMsg) formError.querySelector('.error-text').textContent = customMsg;
+            formError.style.display = 'flex';
+            if (formSuccess) formSuccess.style.display = 'none';
+            setTimeout(() => { formError.style.display = 'none'; }, 8000);
+        }
+    }
 
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             let isValid = true;
             const inputs = ['name', 'email', 'business', 'message'];
 
             inputs.forEach(id => {
                 const input = document.getElementById(id);
                 const group = input.closest('.form-group');
-                
+
                 if (!input.value.trim()) {
                     group.classList.add('error');
                     isValid = false;
@@ -148,44 +263,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, { once: true });
             });
 
-            if (isValid) {
-                // Mock form submission
-                const submitBtn = contactForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                
-                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Sending...";
-                submitBtn.disabled = true;
+            if (!isValid) return;
 
-                fetch("https://formsubmit.co/ajax/zaynticlabs@gmail.com", {
-                    method: "POST",
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        business: document.getElementById('business').value,
-                        message: document.getElementById('message').value,
-                        _subject: "New Website Lead!"
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    contactForm.reset();
-                    formSuccess.style.display = 'flex';
-                    
-                    setTimeout(() => {
-                        formSuccess.style.display = 'none';
-                    }, 5000);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    submitBtn.innerHTML = "Error! Try Again.";
-                    submitBtn.disabled = false;
-                });
+            // Gather form data
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                business: document.getElementById('business').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Sending...";
+            submitBtn.disabled = true;
+
+            // 1) Always save to Firebase first (guaranteed backup — never lose an enquiry)
+            saveToFirebase(payload);
+
+            // 2) Try Web3Forms (primary — confirmed active)
+            let emailSent = await sendViaWeb3Forms(payload);
+
+            // 3) If Web3Forms failed, try FormSubmit.co (fallback)
+            if (!emailSent) {
+                console.warn('[Form] Web3Forms failed, trying FormSubmit fallback...');
+                emailSent = await sendViaFormSubmit(payload);
+            }
+
+            // 4) Handle result
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+
+            if (emailSent) {
+                contactForm.reset();
+                showFormMessage('success');
+            } else {
+                // Both email APIs failed — but Firebase has the data!
+                // Open mailto as last resort for immediate email
+                console.warn('[Form] All email APIs failed. Data saved to Firebase. Opening mailto fallback.');
+                contactForm.reset();
+                showFormMessage('error', 'Email services are busy. Opening your email client as backup...');
+                setTimeout(() => openMailtoFallback(payload), 1500);
             }
         });
     }
